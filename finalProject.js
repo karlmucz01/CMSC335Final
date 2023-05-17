@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const express = require("express");
 const env = require('dotenv');
 const path = require('path');
+const fetch = require("node-fetch");
 
 // global level variable declarations
 // const password = process.env.MONGO_DB_PASSWORD;
