@@ -159,6 +159,9 @@ app.post("/api", (request, response) => {
                         definitions += `<li> <strong>Definition</strong>: ${d.definition}. <strong>Part of Speech</strong>: ${d.partOfSpeech}</li>`;
                     }
                     response.render("apiResult", {defs:definitions});
+                },
+                (error) => {
+                    console.error(error);
                 });
         })();
     } catch (e) {
