@@ -1,10 +1,11 @@
 // required modules
+// globalThis.fetch = fetch;
 const {MongoClient, ServerApiVersion} = require('mongodb');
 const bodyParser = require('body-parser');
 const express = require("express");
 const env = require('dotenv');
 const path = require('path');
-// const fetch = require("node-fetch");
+const axios = require('axios');
 
 // global level variable declarations
 // const password = process.env.MONGO_DB_PASSWORD;
@@ -141,28 +142,31 @@ app.get("/api", (request, response) => {
 
 app.post("/api", (request, response) => {
     const word = request.body.word;
-    const url = `https://wordsapiv1.p.rapidapi.com/words/${word}/definitions`;
     const options = {
         method: 'GET',
+        url: `https://wordsapiv1.p.rapidapi.com/words/${word}/definitions`,
         headers: {
-            'X-RapidAPI-Key': '3ffb5a0b77msh2f11eaaf43296f1p1e77c6jsnef46c3711d06',
-            'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+          'X-RapidAPI-Key': '3ffb5a0b77msh2f11eaaf43296f1p1e77c6jsnef46c3711d06',
+          'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
         }
-    };
+      };
     let definitions = "";
     try {
         (async () => {
-            await fetch(url, options)
-                .then((res) => res.json())
-                .then((data) => {
-                    for (const d of data.definitions) {
-                        definitions += `<li> <strong>Definition</strong>: ${d.definition}. <strong>Part of Speech</strong>: ${d.partOfSpeech}</li>`;
-                    }
-                    response.render("apiResult", {defs:definitions});
-                },
-                (error) => {
-                    console.error(error);
-                });
+            const res = await axios.request(options);
+            const data = res.data;
+            console.log(data);
+            for (const d of data.definitions) {
+                definitions += `<li> <strong>Definition</strong>: ${d.definition}. <strong>Part of Speech</strong>: ${d.partOfSpeech}</li>`;
+            }
+            response.render("apiResult", {defs:definitions});
+            // await fetch(url, options)
+            //     .then((res) => res.json())
+            //     .then((data) => {
+            //     },
+            //     (error) => {
+            //         console.error(error);
+            //     });
         })();
     } catch (e) {
         console.log(error);
